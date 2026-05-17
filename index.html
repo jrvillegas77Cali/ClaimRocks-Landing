@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ClaimRocks — Humanizing Claims through AI</title>
+<style>
+  :root {
+    --cr-black:      #080808;
+    --cr-dark:       #111111;
+    --cr-card:       #161616;
+    --cr-gold:       #FFBB00;
+    --cr-gold-warm:  #FF9500;
+    --cr-gold-light: #FFD94A;
+    --cr-white:      #FFFFFF;
+    --cr-warm-white: #E8E0D0;
+    --cr-silver:     #C8C8C8;
+    --cr-gray:       #666666;
+    --cr-gray-light: #999999;
+    --cr-border:     #1A1A1A;
+    --cr-border-soft: rgba(255,255,255,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #111109;
+    color: var(--cr-white);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  body { min-height: 100vh; }
+
+  ::selection { background: var(--cr-gold); color: var(--cr-black); }
+
+  /* Grain overlay */
+  .grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.045;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  /* Slider styling */
+  input[type=range].cr-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--cr-gold) 0%, var(--cr-gold) var(--val,20%), #1A1A1A var(--val,20%), #1A1A1A 100%);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range].cr-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--cr-gold);
+    border: 3px solid #080808;
+    box-shadow: 0 0 0 1px var(--cr-gold), 0 0 20px rgba(255,187,0,0.5);
+    cursor: pointer;
+  }
+  input[type=range].cr-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--cr-gold);
+    border: 3px solid #080808;
+    box-shadow: 0 0 0 1px var(--cr-gold), 0 0 20px rgba(255,187,0,0.5);
+    cursor: pointer;
+  }
+
+  input::placeholder { color: #444; }
+
+  /* Reusable */
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 64px;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 1100px) {
+    .container { padding: 0 40px; }
+  }
+  @media (max-width: 768px) {
+    .container { padding: 0 24px; }
+  }
+
+  /* FadeIn */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+    will-change: opacity, transform;
+  }
+  .fade-in.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Gold gradient text helper */
+  .gold-gradient {
+    background: linear-gradient(135deg, #FFD94A 0%, #FFBB00 50%, #FF9500 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Hide scrollbar nicety */
+  body::-webkit-scrollbar { width: 10px; }
+  body::-webkit-scrollbar-track { background: #0a0a0a; }
+  body::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 5px; }
+  body::-webkit-scrollbar-thumb:hover { background: #252525; }
+
+  @keyframes cr-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG filter for grain -->
+<svg width="0" height="0" style="position:absolute">
+  <filter id="grainFilter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" />
+    <feColorMatrix type="saturate" values="0" />
+  </filter>
+</svg>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="components/icons.jsx"></script>
+<script type="text/babel" src="components/mockup.jsx"></script>
+<script type="text/babel" src="components/calculator.jsx"></script>
+<script type="text/babel" src="components/sections.jsx"></script>
+<script type="text/babel" src="components/sections2.jsx"></script>
+<script type="text/babel" src="components/faq.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+
+</body>
+</html>
